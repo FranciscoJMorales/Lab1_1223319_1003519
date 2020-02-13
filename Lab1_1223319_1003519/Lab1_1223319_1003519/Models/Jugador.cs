@@ -12,5 +12,10 @@ namespace Lab1_1223319_1003519.Models
         public string Posición { get; set; }
         public double Salario { get; set; }
         public string Club { get; set; }
+
+        public static Comparison<Jugador> CompararNombre = delegate (Jugador j1, Jugador j2)
+        {
+            return j1.Nombre.ToLower().CompareTo(j2.Nombre.ToLower());
+        };
     }
 }
