@@ -47,12 +47,19 @@ namespace Lab1_1223319_1003519.Models
             return j1.Club.ToLower().CompareTo(j2.Club.ToLower());
         };
        
-        internal bool Save()
+        internal bool Save(bool EnListaEnlazada)
         {
             try
             {
+                if (EnListaEnlazada)
+                {
+                    Storage.Instance.JugadorListaEnlazada.Add(this);
+                }
+                else
+                {
+                    Storage.Instance.JugadorList.Add(this);
+                }
                 
-                Storage.Instance.JugadorList.Add(this);
                 //Storage.Instance.jugadorlist.Add(this);
                 return true;
             }

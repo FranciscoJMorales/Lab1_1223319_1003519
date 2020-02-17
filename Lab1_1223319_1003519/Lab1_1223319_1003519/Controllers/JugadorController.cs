@@ -11,6 +11,8 @@ namespace Lab1_1223319_1003519.Controllers
 {
     public class JugadorController : Controller
     {
+        public bool EnListaEnlazada = true;
+        
         // GET: Jugador
         public ActionResult Index()
         {
@@ -19,7 +21,14 @@ namespace Lab1_1223319_1003519.Controllers
             //jugadores.Add(new Jugador { Nombre = "Thomas", Apellido = "Müller", Posición = "Delantero", Salario = 1000000, Club = "Bayern" });
             //jugadores.Add(new Jugador { Nombre = "ewe", Apellido = "Contreras", Posición = "Mediocampista", Salario = 2000000, Club = "Comunicaciones" });
             //jugadores.Add(new Jugador { Nombre = "ewe", Apellido = "Crackpollo", Posición = "Delantero", Salario = 999999999, Club = "Mixco" });
-            return View(Storage.Instance.JugadorList);
+            if (EnListaEnlazada)
+            {
+                return View(Storage.Instance.JugadorListaEnlazada);
+            }
+            else
+            {
+                return View(Storage.Instance.JugadorList);
+            }
         }
         ListaEnlazada<Jugador> jugadorListN = new ListaEnlazada<Jugador>();
         public ActionResult Listas()
@@ -47,14 +56,19 @@ namespace Lab1_1223319_1003519.Controllers
             try
             {
                 var jugador = new Jugador
-                {   ID = Storage.Instance.JugadorList.Count() + 1,
+                {
+                    ID = Storage.Instance.JugadorList.Count() + 1,
                     Nombre = collection["Nombre"],
                     Apellido = collection["Apellido"],
                     Posición = collection["Posición"],
                     Salario = double.Parse(collection["Salario"]),                 
                     Club = collection["Club"],
                 };
-                if (jugador.Save())
+                if (EnListaEnlazada)
+                {
+                    jugador.ID = Storage.Instance.JugadorListaEnlazada.Count + 1;
+                }
+                if (jugador.Save(EnListaEnlazada))
                 {
                     return RedirectToAction("Index");
                 }
@@ -79,32 +93,65 @@ namespace Lab1_1223319_1003519.Controllers
         [HttpPost]
         public ActionResult Edit(int id, FormCollection collection)
         {
-            try
+            if (EnListaEnlazada)
             {
-                
-                for (int i = 0; i < Storage.Instance.JugadorList.Count; i++)
+                try
                 {
-                    if (Storage.Instance.JugadorList[i].ID.Equals(id))
+                    for (int i = 0; i < Storage.Instance.JugadorListaEnlazada.Count; i++)
                     {
-                        
+                        if (Storage.Instance.JugadorListaEnlazada.Get(i).ID.Equals(id))
                         {
-                            Storage.Instance.JugadorList[i].Nombre = collection["Nombre"];
-                            Storage.Instance.JugadorList[i].Apellido = collection["Apellido"];
-                            Storage.Instance.JugadorList[i].Posición = collection["Posición"];
-                            Storage.Instance.JugadorList[i].Salario = double.Parse(collection["Salario"]);
-                            Storage.Instance.JugadorList[i].Club = collection["Club"];
-                        };
-                       
+                            {
+                                var jugador = new Jugador
+                                {
+                                    ID = id,
+                                    Nombre = collection["Nombre"],
+                                    Apellido = collection["Apellido"],
+                                    Posición = collection["Posición"],
+                                    Salario = double.Parse(collection["Salario"]),
+                                    Club = collection["Club"],
+                                };
+                                Storage.Instance.JugadorListaEnlazada.Set(jugador, i);
+                            };
+                        }
                     }
-
-                       
-                    }
-                return RedirectToAction("Index");
+                    return RedirectToAction("Index");
+                }
+                catch
+                {
+                    return View();
+                }
             }
-            catch
+            else
             {
-                return View();
+                try
+                {
+
+                    for (int i = 0; i < Storage.Instance.JugadorList.Count; i++)
+                    {
+                        if (Storage.Instance.JugadorList[i].ID.Equals(id))
+                        {
+
+                            {
+                                Storage.Instance.JugadorList[i].Nombre = collection["Nombre"];
+                                Storage.Instance.JugadorList[i].Apellido = collection["Apellido"];
+                                Storage.Instance.JugadorList[i].Posición = collection["Posición"];
+                                Storage.Instance.JugadorList[i].Salario = double.Parse(collection["Salario"]);
+                                Storage.Instance.JugadorList[i].Club = collection["Club"];
+                            };
+
+                        }
+
+
+                    }
+                    return RedirectToAction("Index");
+                }
+                catch
+                {
+                    return View();
+                }
             }
+            
         }
 
         // GET: Jugador/Delete/5

@@ -11,6 +11,7 @@ namespace CustomGenerics.Estructuras
     public class ListaEnlazada<T> : EstructuraDeDatosLineal<T>, IEnumerable<T>
     {
         private Nodo<T> First { get; set; }
+        public int Count { get; set; } = 0;
 
         public void Add(T value)
         {
@@ -42,11 +43,12 @@ namespace CustomGenerics.Estructuras
                     Anterior = posicion
                 };
             }
+            Count++;
         }
 
         public T Remove()
         {
-            var valor = Get();
+            var valor = Get(0);
             Delete();
             return valor;
         }
@@ -60,20 +62,51 @@ namespace CustomGenerics.Estructuras
                 {
                     First.Anterior = null;
                 }
+                Count--;
             }
         }
 
-        protected override T Get()
+        public override T Get(int position)
         {
-            return First.Valor;
+            Nodo<T> aux = First;
+            try
+            {
+                for (int i = 0; i < position; i++)
+                {
+                    aux = aux.Siguiente;
+                }
+                return aux.Valor;
+            }
+            catch
+            {
+                return default(T);
+            }
+            
+        }
+
+        public override void Set(T value, int position)
+        {
+            Nodo<T> aux = First;
+            try
+            {
+                for (int i = 0; i < position; i++)
+                {
+                    aux = aux.Siguiente;
+                }
+                aux.Valor = value;
+            }
+            catch
+            {   
+            }
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            var CopiaLista = this;
-            while (CopiaLista.First != null)
+            Nodo<T> aux = First;
+            while (aux != null)
             {
-                yield return CopiaLista.Remove();
+                yield return aux.Valor;
+                aux = aux.Siguiente;
             }
         }
 

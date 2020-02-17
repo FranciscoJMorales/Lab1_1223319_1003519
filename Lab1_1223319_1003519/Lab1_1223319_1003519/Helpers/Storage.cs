@@ -21,7 +21,7 @@ namespace Lab1_1223319_1003519.Helpers
             }
         }
 
-       //public ListaEnlazada<Jugador> jugadorList = new ListaEnlazada<Jugador>();
+       public ListaEnlazada<Jugador> JugadorListaEnlazada = new ListaEnlazada<Jugador>();
        public List<Jugador> JugadorList = new List<Jugador>();
        public List<Jugador> busquedajugador = new List<Jugador>();
     }

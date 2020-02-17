@@ -10,6 +10,7 @@ namespace CustomGenerics.Interfaces
     {
         protected abstract void Insert(T value);
         protected abstract void Delete();
-        protected abstract T Get();
+        public abstract T Get(int position);
+        public abstract void Set(T value, int position);
     }
 }
