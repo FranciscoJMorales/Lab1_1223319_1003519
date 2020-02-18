@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CustomGenerics.Estructuras;
+using System.IO;
 
 namespace Lab1_1223319_1003519.Controllers
 {
@@ -204,6 +205,13 @@ namespace Lab1_1223319_1003519.Controllers
             }
          return RedirectToAction("Listas");
         }
-      
+
+        public ActionResult AbrirArchivo()
+        {
+            StreamReader stream = new StreamReader(Jugador.FileUpload.InputStream);
+            string text = stream.ReadToEnd();
+            text += "\n";
+            return RedirectToAction("Index"); ;
+        }
     }
 }

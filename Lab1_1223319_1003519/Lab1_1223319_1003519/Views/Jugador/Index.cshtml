@@ -12,7 +12,8 @@
 </p>
 <input type="button" value="Crear por nombre" onclick="location.href='@Url.Action("Create", "Jugador")'" />
 <input type="button" value="Buscar por nombre" onclick="location.href='@Url.Action("BuscarNombre", "Jugador")'" />
-
+<input type="file" name="FileUpload" value="Seleccionar archivo">
+<input type="button" value="Abrir archivo" onclick="location.href='@Url.Action("AbrirArchivo", "Jugador")'" />
 <table class="table">
     <tr>
         <th>
