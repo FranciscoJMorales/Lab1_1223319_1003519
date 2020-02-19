@@ -7,22 +7,96 @@
 <h2>Jugadores MLS</h2>
 <input type="button" value="Usar lista artesanal" onclick="location.href='@Url.Action("ListaArtesanal", "Jugador")'" />
 <input type="button" value="Usar lista de C#" onclick="location.href='@Url.Action("ListaCS", "Jugador")'" />
-<p>
-    @Html.ActionLink("Create New", "Create")
-    @Html.ActionLink("Ordenar Nombre", "BuscarNombre")
-</p>
-<input type="button" value="Buscar por nombre" onclick="location.href='@Url.Action("BuscarNombre", "Jugador")'" />
+<hr />
+<input type="button" class="btn-info" value="Agregar Jugador" onclick="location.href='@Url.Action("Create", "Jugador")'" />
 @using (Html.BeginForm("AbrirArchivo",
                         "Jugador",
                         FormMethod.Post,
                         new { enctype = "multipart/form-data" }))
 {
-    <label for="file">Seleccionar archivo</label>
-    <input type="file" name="file" id="file" /><br><br>
+
+    <input type="file" name="file" value="Seleccionar Archivo" id="file" />
     <input type="submit" value="Abrir" />
-    <br><br>
-    @ViewBag.Message
-}<br />
+
+}
+<br />
+
+<div class="container">
+    <div class="col-md-12">
+        @using (Html.BeginForm("BuscarNombre",
+                            "Jugador",
+                            FormMethod.Post,
+                            new { enctype = "multipart/form-data" }))
+        {
+            <label for="file">Buscar por Nombre</label>
+            <input type="text" name="text" id="text" />
+            <input type="submit" value="Buscar" />
+        }
+    </div>
+    @using (Html.BeginForm("BuscarApellido",
+                            "Jugador",
+                            FormMethod.Post,
+                            new { enctype = "multipart/form-data" }))
+    {
+        <label for="file">Buscar por Apellido</label>
+        <input type="text" name="text" id="text" />
+
+        <input type="submit" value="Buscar" />
+
+
+    }
+    @using (Html.BeginForm("BuscarPosicion",
+                            "Jugador",
+                            FormMethod.Post,
+                            new { enctype = "multipart/form-data" }))
+    {
+        <label for="file">Buscar por Posicion</label>
+        <input type="text" name="text" id="text" />
+        <input type="submit" value="Buscar" />
+
+    }
+    @using (Html.BeginForm("BuscarSalarioMenor",
+                            "Jugador",
+                            FormMethod.Post,
+                            new { enctype = "multipart/form-data" }))
+    {
+        <label for="file">Buscar por Salario menor a</label>
+        <input type="text" name="text" id="text" />
+        <input type="submit" value="Buscar" />
+    }
+    @using (Html.BeginForm("BuscarSalarioIgual",
+                            "Jugador",
+                            FormMethod.Post,
+                            new { enctype = "multipart/form-data" }))
+    {
+        <label for="file">Buscar por Salario igual a</label>
+        <input type="text" name="text" id="text" />
+        <input type="submit" value="Buscar" />
+    }
+    @using (Html.BeginForm("BuscarSalarioMayor",
+                            "Jugador",
+                            FormMethod.Post,
+                            new { enctype = "multipart/form-data" }))
+    {
+        <label for="file">Buscar por Salario mayor a</label>
+        <input type="text" name="text" id="text" />
+        <input type="submit" value="Buscar" />
+    }
+    @using (Html.BeginForm("BuscarClub",
+                            "Jugador",
+                            FormMethod.Post,
+                            new { enctype = "multipart/form-data" }))
+    {
+        <label for="file">Buscar por Club</label>
+        <input type="text" name="text" id="text" />
+
+        <input type="submit" placeholder="Club" value="Buscar" />
+
+    }
+
+</div>
+
+<br />
 <table class="table">
     <tr>
         <th>
@@ -69,10 +143,11 @@
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
                 @Html.ActionLink("Delete", "Delete", new { id = item.ID })
             </td>
         </tr>
     }
 
 </table>
+
+@Html.ActionLink("Resumen de tiempos", "Details")

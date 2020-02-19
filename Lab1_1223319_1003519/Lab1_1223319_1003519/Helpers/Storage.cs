@@ -23,7 +23,9 @@ namespace Lab1_1223319_1003519.Helpers
 
        public ListaEnlazada<Jugador> JugadorListaEnlazada = new ListaEnlazada<Jugador>();
        public List<Jugador> JugadorList = new List<Jugador>();
-       public List<Jugador> busquedajugador = new List<Jugador>();
+       public List<Jugador> resultadosBusqueda = new List<Jugador>();
+       public ListaEnlazada<Jugador> resultadosListaEnlazada = new ListaEnlazada<Jugador>();
        public bool EnListaEnlazada = true;
+       public List<Tiempo> Log = new List<Tiempo>();
     }
 }

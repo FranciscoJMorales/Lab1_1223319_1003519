@@ -7,17 +7,18 @@ using System.Web;
 using System.Web.Mvc;
 using CustomGenerics.Estructuras;
 using System.IO;
+using System.Diagnostics;
 
 namespace Lab1_1223319_1003519.Controllers
 {
-    public delegate bool Condition(int x, int y);
+    public delegate bool Condition(int x);
 
     public class JugadorController : Controller
     {
         // GET: Jugador
         public ActionResult Index()
         {
-            Storage.Instance.busquedajugador.Clear();
+           
             // var jugadores = Storage.Instance.JugadorList; 
             if (Storage.Instance.EnListaEnlazada)
             {
@@ -29,17 +30,19 @@ namespace Lab1_1223319_1003519.Controllers
             }
         }
 
-        ListaEnlazada<Jugador> jugadorListN = new ListaEnlazada<Jugador>();
         public ActionResult Listas()
         {
 
-            return View(Storage.Instance.busquedajugador);
+            if (Storage.Instance.EnListaEnlazada)
+                return View(Storage.Instance.resultadosListaEnlazada);
+            else
+                return View(Storage.Instance.resultadosBusqueda);
         }
 
         // GET: Jugador/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details()
         {
-            return View();
+            return View("Log", Storage.Instance.Log);
         }
 
         // GET: Jugador/Create
@@ -52,8 +55,10 @@ namespace Lab1_1223319_1003519.Controllers
         [HttpPost]
         public ActionResult Create(FormCollection collection)
         {
+            Stopwatch temporizador = new Stopwatch();
             try
             {
+                temporizador.Start();
                 var jugador = new Jugador
                 {
                     ID = Storage.Instance.JugadorList.Count() + 1,
@@ -69,15 +74,19 @@ namespace Lab1_1223319_1003519.Controllers
                 }
                 if (jugador.Save(Storage.Instance.EnListaEnlazada))
                 {
+                    temporizador.Stop();
+                    Storage.Instance.Log.Add(new Tiempo { Log = "Tiempo de creación: " + temporizador.Elapsed });
                     return RedirectToAction("Index");
                 }
                 else
                 {
+                    temporizador.Stop();
                     return View(jugador);
                 }
             }
             catch
             {
+                temporizador.Stop();
                 return View();
             }
         }
@@ -85,13 +94,18 @@ namespace Lab1_1223319_1003519.Controllers
         // GET: Jugador/Edit/5
         public ActionResult Edit(int id)
         {
-            return View("");
+            if (Storage.Instance.EnListaEnlazada)
+                return View("Edit", Storage.Instance.JugadorListaEnlazada.Get(id - 1));
+            else
+                return View("Edit", Storage.Instance.JugadorList[id - 1]);
         }
 
         // POST: Jugador/Edit/5
         [HttpPost]
         public ActionResult Edit(int id, FormCollection collection)
         {
+            Stopwatch temporizador = new Stopwatch();
+            temporizador.Start();
             if (Storage.Instance.EnListaEnlazada)
             {
                 try
@@ -114,10 +128,13 @@ namespace Lab1_1223319_1003519.Controllers
                             };
                         }
                     }
+                    temporizador.Stop();
+                    Storage.Instance.Log.Add(new Tiempo { Log = "Tiempo de edición: " + temporizador.Elapsed });
                     return RedirectToAction("Index");
                 }
                 catch
                 {
+                    temporizador.Stop();
                     return View();
                 }
             }
@@ -140,10 +157,13 @@ namespace Lab1_1223319_1003519.Controllers
                             };
                         }
                     }
+                    temporizador.Stop();
+                    Storage.Instance.Log.Add(new Tiempo { Log = "Tiempo de edición: " + temporizador.Elapsed });
                     return RedirectToAction("Index");
                 }
                 catch
                 {
+                    temporizador.Stop();
                     return View();
                 }
             }
@@ -152,6 +172,8 @@ namespace Lab1_1223319_1003519.Controllers
         // GET: Jugador/Delete/5
         public ActionResult Delete(int id)
         {
+            Stopwatch temporizador = new Stopwatch();
+            temporizador.Start();
             if (Storage.Instance.EnListaEnlazada)
             {
                 try
@@ -171,10 +193,13 @@ namespace Lab1_1223319_1003519.Controllers
                             aux.ID--;
                         }
                     }
+                    temporizador.Stop();
+                    Storage.Instance.Log.Add(new Tiempo { Log = "Tiempo de eliminación: " + temporizador.Elapsed });
                     return RedirectToAction("Index");
                 }
                 catch
                 {
+                    temporizador.Stop();
                     return View();
                 }
             }
@@ -199,10 +224,13 @@ namespace Lab1_1223319_1003519.Controllers
                             Storage.Instance.JugadorList[i].ID--;
                         }
                     }
+                    temporizador.Stop();
+                    Storage.Instance.Log.Add(new Tiempo { Log = "Tiempo de eliminación: " + temporizador.Elapsed });
                     return RedirectToAction("Index");
                 }
                 catch
                 {
+                    temporizador.Stop();
                     return View();
                 }
             }
@@ -224,40 +252,91 @@ namespace Lab1_1223319_1003519.Controllers
             }
         }
 
-        //public ActionResult BuscarNombre(string parametro)
-        //{
-        //    parametro = "ewe";
-        //    int i = 0;
-        //    while ( i>2)
-        //    {
-        //        if(Storage.Instance.jugadorList.First.Valor.Nombre == parametro)
-        //        {
-        //            jugadorListN.Add(Storage.Instance.jugadorList.First.Valor);
-        //        }
-        //        Storage.Instance.jugadorList.First = Storage.Instance.jugadorList.First.Siguiente;
-        //        i++;
-        //    }
-        //    return RedirectToAction("Listas");
-        //}
-
-        public ActionResult BuscarNombre(string parametro)
+        [HttpPost]
+        public ActionResult BuscarNombre(string text)
         {
-            parametro = "ewe";
-            for (int i = 0; i < Storage.Instance.JugadorList.Count; i++)
+
+            Jugador j1 = new Jugador { Nombre = text };
+            return Buscar(Jugador.CompararNombre, Igual, j1);
+        }
+        public ActionResult BuscarApellido(string text)
+        {
+            //apellido = "ewe";
+            Jugador j1 = new Jugador { Apellido = text };
+            return Buscar(Jugador.CompararApellido, Igual, j1);
+        }
+        public ActionResult BuscarPosicion(string text)
+        {
+
+            Jugador j1 = new Jugador { Posición = text };
+            return Buscar(Jugador.CompararPosicion, Igual, j1);
+        }
+
+        public ActionResult BuscarSalarioMenor(string text)
+        {
+            Jugador j1 = new Jugador { Salario = double.Parse(text) };
+           
+                return Buscar(Jugador.CompararSalario, Menor, j1);
+        }
+        public ActionResult BuscarSalarioMayor(string text)
+        {
+            Jugador j1 = new Jugador { Salario = double.Parse(text) };
+            
+                return Buscar(Jugador.CompararSalario, Mayor, j1);
+        }
+        public ActionResult BuscarSalarioIgual(string text)
+        {
+            Jugador j1 = new Jugador { Salario = double.Parse(text) };
+           
+                return Buscar(Jugador.CompararSalario, Igual, j1);
+        }
+
+        public ActionResult BuscarClub(string text)
+        {
+            //nombre = "ewe";
+            Jugador j1 = new Jugador { Club = text };
+            return Buscar(Jugador.CompararClub, Igual, j1);
+        }
+
+        public ActionResult Buscar(Comparison<Jugador> parametro, Condition position, Jugador j1)
+        {
+            Stopwatch temporizador = new Stopwatch();
+            temporizador.Start();
+            if (Storage.Instance.EnListaEnlazada)
             {
-                if (Storage.Instance.JugadorList[i].Nombre.Equals(parametro))
+                Storage.Instance.resultadosListaEnlazada.Clear();
+                for (int i = 0; i < Storage.Instance.JugadorListaEnlazada.Count; i++)
                 {
-                    Storage.Instance.busquedajugador.Add(Storage.Instance.JugadorList[i]);
+                    if (position.Invoke(parametro.Invoke(Storage.Instance.JugadorListaEnlazada.Get(i), j1)))
+                    {
+                        Storage.Instance.resultadosListaEnlazada.Add(Storage.Instance.JugadorListaEnlazada.Get(i));
+                    }
                 }
             }
+            else
+            {
+                Storage.Instance.resultadosBusqueda.Clear();
+                for (int i = 0; i < Storage.Instance.JugadorList.Count; i++)
+                {
+                    if (position.Invoke(parametro.Invoke(Storage.Instance.JugadorList[i], j1)))
+                    {
+                        Storage.Instance.resultadosBusqueda.Add(Storage.Instance.JugadorList[i]);
+                    }
+                }
+            }
+            temporizador.Stop();
+            Storage.Instance.Log.Add(new Tiempo { Log = "Tiempo de búsqueda: " + temporizador.Elapsed });
             return RedirectToAction("Listas");
         }
 
         [HttpPost]
         public ActionResult AbrirArchivo(HttpPostedFileBase file)
         {
+            Stopwatch temporizador = new Stopwatch();
+            temporizador.Start();
             StreamReader stream = new StreamReader(file.InputStream);
             string text = stream.ReadToEnd();
+            stream.Close();
             if (Storage.Instance.EnListaEnlazada)
                 Storage.Instance.JugadorListaEnlazada.Clear();
             else
@@ -282,6 +361,8 @@ namespace Lab1_1223319_1003519.Controllers
                 text = text.Remove(0, text.IndexOf("\r\n") + 2);
                 nuevo.Save(Storage.Instance.EnListaEnlazada);
             }
+            temporizador.Stop();
+            Storage.Instance.Log.Add(new Tiempo { Log = "Tiempo de carga: " + temporizador.Elapsed });
             return RedirectToAction("Index"); ;
         }
 
@@ -297,19 +378,19 @@ namespace Lab1_1223319_1003519.Controllers
             return RedirectToAction("Index");
         }
 
-        public static Condition Igual = delegate (int x, int y)
+        public static Condition Igual = delegate (int x)
         {
-            return x == y;
+            return x == 0;
         };
 
-        public static Condition Menor = delegate (int x, int y)
+        public static Condition Menor = delegate (int x)
         {
-            return x < y;
+            return x < 0;
         };
 
-        public static Condition Mayor = delegate (int x, int y)
+        public static Condition Mayor = delegate (int x)
         {
-            return x > y;
+            return x > 0;
         };
     }
 }

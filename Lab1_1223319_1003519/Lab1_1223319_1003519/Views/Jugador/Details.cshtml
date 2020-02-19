@@ -1,0 +1,25 @@
+﻿@model Lab1_1223319_1003519.Models.Tiempo
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Tiempo</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Log)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Log)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Volver al inicio", "Index", "Jugador")
+</p>

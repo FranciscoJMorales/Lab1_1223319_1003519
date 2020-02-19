@@ -149,6 +149,7 @@
     </Compile>
     <Compile Include="Helpers\Storage.cs" />
     <Compile Include="Models\Jugador.cs" />
+    <Compile Include="Models\Tiempo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -192,6 +193,8 @@
     <Content Include="Views\Jugador\Create.cshtml" />
     <Content Include="Views\Jugador\Listas.cshtml" />
     <Content Include="Views\Jugador\Edit.cshtml" />
+    <Content Include="Views\Jugador\Details.cshtml" />
+    <Content Include="Views\Jugador\Log.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
