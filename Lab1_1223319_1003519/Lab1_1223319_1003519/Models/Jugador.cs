@@ -53,7 +53,7 @@ namespace Lab1_1223319_1003519.Models
             {
                 
                 Storage.Instance.JugadorList.Add(this);
-                //Storage.Instance.jugadorlist.Add(this);
+                
                 return true;
             }
             catch

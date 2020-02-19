@@ -14,18 +14,15 @@ namespace Lab1_1223319_1003519.Controllers
         // GET: Jugador
         public ActionResult Index()
         {
-            Storage.Instance.busquedajugador.Clear();
-            // var jugadores = Storage.Instance.JugadorList; 
-            //jugadores.Add(new Jugador { Nombre = "Thomas", Apellido = "Müller", Posición = "Delantero", Salario = 1000000, Club = "Bayern" });
-            //jugadores.Add(new Jugador { Nombre = "ewe", Apellido = "Contreras", Posición = "Mediocampista", Salario = 2000000, Club = "Comunicaciones" });
-            //jugadores.Add(new Jugador { Nombre = "ewe", Apellido = "Crackpollo", Posición = "Delantero", Salario = 999999999, Club = "Mixco" });
+            
+            Storage.Instance.resultadosbusqueda.Clear();           
             return View(Storage.Instance.JugadorList);
         }
         ListaEnlazada<Jugador> jugadorListN = new ListaEnlazada<Jugador>();
         public ActionResult Listas()
         {
             
-            return View(Storage.Instance.busquedajugador);
+            return View(Storage.Instance.resultadosbusqueda);
         }
 
         // GET: Jugador/Details/5
@@ -144,19 +141,44 @@ namespace Lab1_1223319_1003519.Controllers
         //    }
         //    return RedirectToAction("Listas");
         //}
-       
-        public ActionResult BuscarNombre (string parametro)
+
+
+        public ActionResult BuscarNombre(string nombre)
         {
-            parametro = "ewe";
-            for(int i= 0; i< Storage.Instance.JugadorList.Count; i++)
+            ViewBag.Nombre = nombre;
+            Jugador j1 = new Jugador { Nombre = nombre };
+            return Buscar(Jugador.CompararNombre, j1);
+        }
+        public ActionResult BuscarApellido(string apellido)
+        {
+            //apellido = "ewe";
+            Jugador j1 = new Jugador { Apellido = apellido };
+            return Buscar(Jugador.CompararApellido, j1);
+        }
+        public ActionResult BuscarPosicion(string posicion)
+        {
+            
+            Jugador j1 = new Jugador { Posición = posicion };
+            return Buscar(Jugador.CompararPosicion, j1);
+        }
+        public ActionResult BuscarClub(string club)
+        {
+            //nombre = "ewe";
+            Jugador j1 = new Jugador { Club = club };
+            return Buscar(Jugador.CompararClub, j1);
+        }
+
+        public ActionResult Buscar(Comparison<Jugador> parametro, Jugador j1)
+        {
+            
+            for (int i = 0; i < Storage.Instance.JugadorList.Count; i++)
             {
-                if (Storage.Instance.JugadorList[i].Nombre.Equals(parametro))
+                if (parametro.Invoke(j1, Storage.Instance.JugadorList[i]) == 0)
                 {
-                    Storage.Instance.busquedajugador.Add(Storage.Instance.JugadorList[i]);
+                    Storage.Instance.resultadosbusqueda.Add(Storage.Instance.JugadorList[i]);
                 }
             }
-         return RedirectToAction("Listas");
+            return RedirectToAction("Listas");
         }
-      
     }
 }
