@@ -4,13 +4,13 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
-
+<h2>Jugadores MLS</h2>
+<input type="button" value="Usar lista artesanal" onclick="location.href='@Url.Action("ListaArtesanal", "Jugador")'" />
+<input type="button" value="Usar lista de C#" onclick="location.href='@Url.Action("ListaCS", "Jugador")'" />
 <p>
     @Html.ActionLink("Create New", "Create")
     @Html.ActionLink("Ordenar Nombre", "BuscarNombre")
 </p>
-<input type="button" value="Crear por nombre" onclick="location.href='@Url.Action("Create", "Jugador")'" />
 <input type="button" value="Buscar por nombre" onclick="location.href='@Url.Action("BuscarNombre", "Jugador")'" />
 @using (Html.BeginForm("AbrirArchivo",
                         "Jugador",
@@ -70,7 +70,7 @@
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
                 @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                @Html.ActionLink("Delete", "Delete", new { id = item.ID })
             </td>
         </tr>
     }

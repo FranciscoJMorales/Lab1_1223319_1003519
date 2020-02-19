@@ -46,23 +46,31 @@ namespace CustomGenerics.Estructuras
             Count++;
         }
 
-        public T Remove()
+        public override void Delete(int position)
         {
-            var valor = Get(0);
-            Delete();
-            return valor;
-        }
-
-        protected override void Delete()
-        {
-            if (First != null)
+            Nodo<T> aux = First;
+            try
             {
-                First = First.Siguiente;
-                if (First != null)
+                for (int i = 0; i < position; i++)
                 {
-                    First.Anterior = null;
+                    aux = aux.Siguiente;
+                }
+                if (aux == First)
+                {
+                    First = aux.Siguiente;
+                }
+                if (aux.Anterior != null)
+                {
+                    aux.Anterior.Siguiente = aux.Siguiente;
+                }
+                if (aux.Siguiente != null)
+                {
+                    aux.Siguiente.Anterior = aux.Anterior;
                 }
                 Count--;
+            }
+            catch
+            {
             }
         }
 
