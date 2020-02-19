@@ -1,0 +1,3 @@
+Cristiano;Ronaldo;Delantero;232323;Juventus
+Robert;Lewandowski;Delantero;3289382;Bayern
+Andre;Onana;Portero;238928;Ajax

@@ -9,7 +9,8 @@ namespace CustomGenerics.Interfaces
     public abstract class EstructuraDeDatosLineal<T>
     {
         protected abstract void Insert(T value);
-        protected abstract void Delete();
-        protected abstract T Get();
+        public abstract void Delete(int position);
+        public abstract T Get(int position);
+        public abstract void Set(T value, int position);
     }
 }

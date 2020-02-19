@@ -1,38 +1,31 @@
-﻿
-@model IEnumerable<Lab1_1223319_1003519.Models.Jugador>
+﻿@model IEnumerable<Lab1_1223319_1003519.Models.Jugador>
 
 @{
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
-
-
-
-<form method="post">
-    <div>
-        <input type="text" class="form-control" name="Nombre" placeholder="Buscar por nombre" />
-    </div>
-    <div>
-
-        <button type="submit" class="btn-danger">Buscar</button>
-    </div>
-    <div>
-        <h3>@ViewBag.Nombre</h3>
-    </div>
-</form>
-
-
-<input type="button" class="btn-danger" value="Crear por nombre" onclick="location.href='@Url.Action("Create", "Jugador")'" />
-
-
-
-<input type="button" class="btn-danger" value="Buscar por nombre" onclick="location.href='@Url.Action("BuscarNombre", "Jugador")'" />
-
+<h2>Jugadores MLS</h2>
+<input type="button" value="Usar lista artesanal" onclick="location.href='@Url.Action("ListaArtesanal", "Jugador")'" />
+<input type="button" value="Usar lista de C#" onclick="location.href='@Url.Action("ListaCS", "Jugador")'" />
+<p>
+    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Ordenar Nombre", "BuscarNombre")
+</p>
+<input type="button" value="Buscar por nombre" onclick="location.href='@Url.Action("BuscarNombre", "Jugador")'" />
+@using (Html.BeginForm("AbrirArchivo",
+                        "Jugador",
+                        FormMethod.Post,
+                        new { enctype = "multipart/form-data" }))
+{
+    <label for="file">Seleccionar archivo</label>
+    <input type="file" name="file" id="file" /><br><br>
+    <input type="submit" value="Abrir" />
+    <br><br>
+    @ViewBag.Message
+}<br />
 <table class="table">
     <tr>
         <th>
-
             @Html.DisplayNameFor(model => model.ID)
         </th>
         <th>
@@ -77,7 +70,7 @@
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
                 @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                @Html.ActionLink("Delete", "Delete", new { id = item.ID })
             </td>
         </tr>
     }

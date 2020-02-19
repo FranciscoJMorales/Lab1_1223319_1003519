@@ -11,6 +11,7 @@ namespace CustomGenerics.Estructuras
     public class ListaEnlazada<T> : EstructuraDeDatosLineal<T>, IEnumerable<T>
     {
         private Nodo<T> First { get; set; }
+        public int Count { get; set; } = 0;
 
         public void Add(T value)
         {
@@ -42,38 +43,84 @@ namespace CustomGenerics.Estructuras
                     Anterior = posicion
                 };
             }
+            Count++;
         }
 
-        public T Remove()
+        public override void Delete(int position)
         {
-            var valor = Get();
-            Delete();
-            return valor;
-        }
-
-        protected override void Delete()
-        {
-            if (First != null)
+            Nodo<T> aux = First;
+            try
             {
-                First = First.Siguiente;
-                if (First != null)
+                for (int i = 0; i < position; i++)
                 {
-                    First.Anterior = null;
+                    aux = aux.Siguiente;
                 }
+                if (aux == First)
+                {
+                    First = aux.Siguiente;
+                }
+                if (aux.Anterior != null)
+                {
+                    aux.Anterior.Siguiente = aux.Siguiente;
+                }
+                if (aux.Siguiente != null)
+                {
+                    aux.Siguiente.Anterior = aux.Anterior;
+                }
+                Count--;
+            }
+            catch
+            {
             }
         }
 
-        protected override T Get()
+        public override T Get(int position)
         {
-            return First.Valor;
+            Nodo<T> aux = First;
+            try
+            {
+                for (int i = 0; i < position; i++)
+                {
+                    aux = aux.Siguiente;
+                }
+                return aux.Valor;
+            }
+            catch
+            {
+                return default(T);
+            }
+            
+        }
+
+        public override void Set(T value, int position)
+        {
+            Nodo<T> aux = First;
+            try
+            {
+                for (int i = 0; i < position; i++)
+                {
+                    aux = aux.Siguiente;
+                }
+                aux.Valor = value;
+            }
+            catch
+            {   
+            }
+        }
+
+        public void Clear()
+        {
+            First = null;
+            Count = 0;
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            var CopiaLista = this;
-            while (CopiaLista.First != null)
+            Nodo<T> aux = First;
+            while (aux != null)
             {
-                yield return CopiaLista.Remove();
+                yield return aux.Valor;
+                aux = aux.Siguiente;
             }
         }
 
