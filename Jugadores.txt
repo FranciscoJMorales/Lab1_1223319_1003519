@@ -1,1 +1,2 @@
 Cristiano;Ronaldo;Delantero;232323;Juventus
+Thomas;Müller;Delantero;3289382;Bayern

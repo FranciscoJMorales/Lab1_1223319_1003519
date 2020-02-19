@@ -10,6 +10,8 @@ using System.IO;
 
 namespace Lab1_1223319_1003519.Controllers
 {
+    public delegate bool Condition(int x, int y);
+
     public class JugadorController : Controller
     {
         public bool EnListaEnlazada = true;
@@ -19,9 +21,6 @@ namespace Lab1_1223319_1003519.Controllers
         {
             Storage.Instance.busquedajugador.Clear();
             // var jugadores = Storage.Instance.JugadorList; 
-            //jugadores.Add(new Jugador { Nombre = "Thomas", Apellido = "Müller", Posición = "Delantero", Salario = 1000000, Club = "Bayern" });
-            //jugadores.Add(new Jugador { Nombre = "ewe", Apellido = "Contreras", Posición = "Mediocampista", Salario = 2000000, Club = "Comunicaciones" });
-            //jugadores.Add(new Jugador { Nombre = "ewe", Apellido = "Crackpollo", Posición = "Delantero", Salario = 999999999, Club = "Mixco" });
             if (EnListaEnlazada)
             {
                 return View(Storage.Instance.JugadorListaEnlazada);
@@ -206,12 +205,49 @@ namespace Lab1_1223319_1003519.Controllers
          return RedirectToAction("Listas");
         }
 
-        public ActionResult AbrirArchivo()
+        [HttpPost]
+        public ActionResult AbrirArchivo(HttpPostedFileBase file)
         {
-            StreamReader stream = new StreamReader(Jugador.FileUpload.InputStream);
+            StreamReader stream = new StreamReader(file.InputStream);
             string text = stream.ReadToEnd();
-            text += "\n";
+            Storage.Instance.JugadorList.Clear();
+            Storage.Instance.JugadorListaEnlazada.Clear();
+            while (text.IndexOf("\r\n") >= 0)
+            {
+                Jugador nuevo = new Jugador();
+                nuevo.ID = Storage.Instance.JugadorList.Count() + 1;
+                if (EnListaEnlazada)
+                {
+                    nuevo.ID = Storage.Instance.JugadorListaEnlazada.Count + 1;
+                }
+                nuevo.Nombre = text.Substring(0, text.IndexOf(";"));
+                text = text.Remove(0, text.IndexOf(";") + 1);
+                nuevo.Apellido = text.Substring(0, text.IndexOf(";"));
+                text = text.Remove(0, text.IndexOf(";") + 1);
+                nuevo.Posición = text.Substring(0, text.IndexOf(";"));
+                text = text.Remove(0, text.IndexOf(";") + 1);
+                nuevo.Salario = Double.Parse(text.Substring(0, text.IndexOf(";")));
+                text = text.Remove(0, text.IndexOf(";") + 1);
+                nuevo.Club = text.Substring(0, text.IndexOf("\r\n"));
+                text = text.Remove(0, text.IndexOf("\r\n") + 2);
+                nuevo.Save(EnListaEnlazada);
+            }
             return RedirectToAction("Index"); ;
         }
+
+        public static Condition Igual = delegate (int x, int y)
+        {
+            return x == y;
+        };
+
+        public static Condition Menor = delegate (int x, int y)
+        {
+            return x < y;
+        };
+
+        public static Condition Mayor = delegate (int x, int y)
+        {
+            return x > y;
+        };
     }
 }

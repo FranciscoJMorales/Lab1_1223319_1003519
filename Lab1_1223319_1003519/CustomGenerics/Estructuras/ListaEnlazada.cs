@@ -100,6 +100,12 @@ namespace CustomGenerics.Estructuras
             }
         }
 
+        public void Clear()
+        {
+            First = null;
+            Count = 0;
+        }
+
         public IEnumerator<T> GetEnumerator()
         {
             Nodo<T> aux = First;

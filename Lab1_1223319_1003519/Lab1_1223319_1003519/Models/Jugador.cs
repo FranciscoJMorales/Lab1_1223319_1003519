@@ -27,7 +27,7 @@ namespace Lab1_1223319_1003519.Models
         [Required]
         public string Club { get; set; }
 
-        public static HttpPostedFileBase FileUpload { get; set; }
+        public HttpPostedFileBase FileUpload { get; set; }
 
         public static Comparison<Jugador> CompararNombre = delegate (Jugador j1, Jugador j2)
         {
